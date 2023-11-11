@@ -1,6 +1,9 @@
 package com.example.user;
 
+import com.example.user.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +18,8 @@ public class UserService {
     }
 
     public List<User> getNames(String startsWith) {
-        if (startsWith == null) {
+        if (Objects.isNull(startsWith)) {
             return userMapper.findAll();
-
         } else {
             return userMapper.findByNameStartingWith(startsWith);
         }
@@ -31,6 +33,8 @@ public class UserService {
         } else {
             throw new UserNotFoundException("user not found");
         }
+//        return user.orElseThrow(() -> new UserNotFoundException("user not found"));
+
     }
 
 }
