@@ -1,10 +1,10 @@
 package com.example.user;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 
@@ -17,7 +17,7 @@ public class UserController {
     }
 
     @GetMapping("/names")
-    public List<User> findByNames(@RequestParam String startsWith) {
+    public List<User> findByNames(@RequestParam(required = false) String startsWith) {
         return userService.getNames(startsWith);
     }
 
@@ -25,6 +25,15 @@ public class UserController {
     public User getUser(@PathVariable("id") int id) {
         return userService.findUser(id);
     }
+
+    @PostMapping("/users")
+    public ResponseEntity<UserResponse> insert(@RequestBody UserRequest userRequest, UriComponentsBuilder uriBuilder) {
+        User user = userService.insert(userRequest.getName(), userRequest.getEmail());
+        URI location = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
+        UserResponse body = new UserResponse("user created");
+        return ResponseEntity.created(location).body(body);
+    }
+
 
 
 

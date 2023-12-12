@@ -28,13 +28,17 @@ public class UserService {
 
     public User findUser(int id) {
         Optional<User> user = this.userMapper.findById(id);
-        if (user.isPresent()) {
-            return user.get();
-        } else {
-            throw new UserNotFoundException("user not found");
-        }
-//        return user.orElseThrow(() -> new UserNotFoundException("user not found"));
+
+       return user.orElseThrow(() -> new UserNotFoundException("user not found"));
+
 
     }
+
+    public User insert(String name, String email) {
+        User user = new User(null, name, email);
+        userMapper.insert(user);
+        return user;
+    }
+
 
 }
